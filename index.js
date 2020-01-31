@@ -11,11 +11,19 @@ app.get('/', (req, res) => {
 })
 
 app.post('/', (req, res) => {
-  request('https://apiv2.bitcoinaverage.com/indices/global/ticker/BTDUSD', (error, response, body) => {
-    let price = JSON.parse(body);
-    console.log(price);
+  let crypto = req.body.crypto,
+    fiat = req.body.fiat;
+  request({
+    url: `https://apiv2.bitcoinaverage.com/indices/global/ticker/${crypto}${fiat}`,
+    headers: {'x-ba-key': 'MGM3Mzg5YTBjZDFmNDllNGFhODhmNzNmODAzZjk1YzI'}
+  }, (error, response, body) => {
+    let data = JSON.parse(body),
+      price = data.averages.week,
+      date = data.display_timestamp;
+    res.write(`<p>The date is ${date}</p>`);
+    res.write(`<h1>The price of ${crypto} is ${price}${fiat}</h1>`);
+    res.send();
   });
-
 })
 
 app.listen(2020, () => {
