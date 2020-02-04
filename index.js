@@ -13,15 +13,23 @@ app.get('/', (req, res) => {
 app.post('/', (req, res) => {
   let crypto = req.body.crypto,
     fiat = req.body.fiat;
+    amount = req.body.amount;
   request({
-    url: `https://apiv2.bitcoinaverage.com/indices/global/ticker/${crypto}${fiat}`,
-    headers: {'x-ba-key': 'MGM3Mzg5YTBjZDFmNDllNGFhODhmNzNmODAzZjk1YzI'}
+    url: `https://apiv2.bitcoinaverage.com/convert/global`,
+    headers: {'x-ba-key': 'MGM3Mzg5YTBjZDFmNDllNGFhODhmNzNmODAzZjk1YzI'},
+    method: "GET",
+    qs: {
+      from: crypto,
+      to: fiat,
+      amount: amount
+    }
   }, (error, response, body) => {
     let data = JSON.parse(body),
-      price = data.averages.week,
-      date = data.display_timestamp;
+      price = data.price;
+      console.log(price);
+      date = data.time;
     res.write(`<p>The date is ${date}</p>`);
-    res.write(`<h1>The price of ${crypto} is ${price}${fiat}</h1>`);
+    res.write(`<h1>${amount}${crypto} is currently worth ${price}${fiat}</h1>`);
     res.send();
   });
 })
