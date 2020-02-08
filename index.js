@@ -34,6 +34,6 @@ app.post('/', (req, res) => {
   });
 })
 
-app.listen(2020, () => {
+app.listen(process.env.PORT || 2020, () => {
   console.log('Server is running on port 2020')
 })
